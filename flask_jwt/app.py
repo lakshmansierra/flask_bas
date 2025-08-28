@@ -1,26 +1,31 @@
 import uuid
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 
 from db import stores, users
 
 app = Flask(__name__)
-app.config["JWT_SECRET_KEY"] = "super-secret-key"  # change in production
+app.config["JWT_SECRET_KEY"] = "super-secret-key"
 jwt = JWTManager(app)
 
 # ---------------- AUTHENTICATION ----------------
 @app.post("/login")
 def login():
     json_body = request.get_json()
-    username = json_body.get("username")
-    password = json_body.get("password")
+    username = json_body["username"]
+    password = json_body["password"]
 
-    user = users.get(username, None)
+    user = users[json_body["username"]]
     if not user or user["password"] != password:
-        return jsonify({"msg": "Invalid username or password"}), 401
+        return {"msg": "Invalid username or password"}
 
     access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token)
+    return {"access token" : access_token}
+
+# ---------------- USER ROUTES ----------------
+@app.get("/user_list")
+def user_list():
+    return users
 
 # ---------------- STORE ROUTES ----------------
 @app.get("/all_stores")
