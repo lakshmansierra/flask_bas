@@ -21,9 +21,9 @@ def login():
     access_token = create_access_token(identity=username)
     return {"access_token" : access_token}
 
-@app.get("/users")
-@jwt_required
-def users():
+@app.get("/user_list")
+@jwt_required()
+def user_list():
     return users
 
 if __name__ == "__main__":
