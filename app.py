@@ -21,6 +21,10 @@ def login():
     access_token = create_access_token(identity=username)
     return {"access_token" : access_token}
 
+@app.get("/users")
+@jwt_required
+def users():
+    return users
 
 if __name__ == "__main__":
     app.run(debug=True)
