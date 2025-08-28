@@ -12,14 +12,12 @@ jwt = JWTManager(app)
 @app.post("/login")
 def login():
     json_body = request.get_json()
-    username = json_body["username"]
-    password = json_body["password"]
 
     user = users[json_body["username"]]
-    if not user or user["password"] != password:
+    if not user or user["password"] != json_body["password"]:
         return {"msg": "Invalid username or password"}
 
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=json_body["username"])
     return {"access token" : access_token}
 
 # ---------------- USER ROUTES ----------------
